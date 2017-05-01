@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Snake : MonoBehaviour 
 {
 	public GameObject tailPrefab = null;
-
+	public float moveEverySec = 0.3f;
 	private List<Transform> tail = new List<Transform>();
 	private Vector2 dir = Vector2.right;
 
@@ -16,25 +17,25 @@ public class Snake : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		InvokeRepeating("Move", 0.3f, 0.3f);
+		InvokeRepeating("Move", moveEverySec, moveEverySec);
 	}//Awake
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Input.GetKeyDown(KeyCode.RightArrow))
+		if (Input.GetKeyDown(KeyCode.RightArrow) && dir != Vector2.left)
 		{
 			dir = Vector2.right;
 		}//if
-		else if (Input.GetKeyDown(KeyCode.LeftArrow))
+		else if (Input.GetKeyDown(KeyCode.LeftArrow) && dir != Vector2.right)
 		{
 			dir = Vector2.left;
 		}//else if
-		else if (Input.GetKeyDown(KeyCode.UpArrow))
+		else if (Input.GetKeyDown(KeyCode.UpArrow) && dir != Vector2.down)
 		{
 			dir = Vector2.up;
 		}//else if
-		else if (Input.GetKeyDown(KeyCode.DownArrow))
+		else if (Input.GetKeyDown(KeyCode.DownArrow) && dir != Vector2.up)
 		{
 			dir = Vector2.down;
 		}//else if
@@ -64,6 +65,13 @@ public class Snake : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D coll)
 	{
-		print("BAM");
+		CancelInvoke();
+		Invoke("Die", 2);
+		enabled = false;
 	}//OnCollisionEnter2D
+
+	void Die()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}//Die
 }//
